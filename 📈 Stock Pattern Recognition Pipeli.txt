@@ -1,0 +1,43 @@
+📈 Stock Pattern Recognition Pipeline & Dashboard
+
+A comprehensive, 8-phase machine learning pipeline and interactive visualization dashboard for discovering and evaluating robust stock market patterns. This project utilizes Dynamic Time Warping (DTW) K-Means clustering to analyze Simple Moving Average (SMA) and Exponential Moving Average (EMA) momentum spreads, separating true predictive signals from regime-dependent market noise.
+
+## 🏗️ Core Architecture & Pipeline
+
+The system is built on a rigorous chronological split (Training: 2006–2019, Validation: 2020–2026) to prevent data leakage and evaluate true forward-looking performance. 
+
+*   **Sequential Windowing & PCA:** Slices time-series data into 10-day contiguous windows and applies Principal Component Analysis (PCA) to retain 95% of variance, removing noise prior to silhouette scoring.
+*   **Dual Hyperparameter Tuning:** Automatically determines the optimal number of patterns (K) without human bias by finding the agreement between the Kneedle Elbow method (inertia) and the Silhouette score.
+*   **Unsupervised Pattern Discovery:** Uses DTW K-Means to cluster 3D tensors of momentum waves into shape-based archetypes.
+*   **Empirical Robustness Profiling:** Builds a Cluster × Year win-rate matrix to identify "all-weather" patterns that consistently achieve >55% win rates across multiple market regimes.
+*   **Supervised TA-Lib Characterization:** Scans the unsupervised DTW clusters against textbook candlestick patterns (e.g., Morning Star, Engulfing, Doji) to bridge algorithmic discovery with traditional technical analysis.
+
+*   **Final System Evaluation:** Compares the SMA Baseline against the EMA Freshness variant using Accuracy, Precision, Recall, and F1 scores, specifically testing for overfitting via Train vs. Validation deltas.
+
+## 📂 Repository Structure
+
+*   **`pattern_recognition_pipeline.ipynb`**
+    The main execution environment. A Jupyter Notebook that ingests the raw data, engineers features, tunes hyperparameters, and builds the clustering models.
+*   **`pr_dashboard.py`**
+    A dark-themed, terminal-aesthetic Streamlit web application. It serves as the interactive presentation layer, rendering PCA scatter plots, DTW centroid shapes, and yearly win-rate heatmaps. 
+*   **`top_companies_20y_daily_combined.csv`**
+    The core dataset containing 20 years of daily OHLCV (Open, High, Low, Close, Volume) data for top market tickers.
+
+## 🚀 Usage Guide
+
+### 1. Install Dependencies
+Ensure your Python environment has the required libraries installed. You will need standard data science tools along with time-series and financial packages:
+```bash
+pip install pandas numpy scikit-learn tslearn kneed plotly streamlit ta-lib
+```
+*(Note: `ta-lib` may require installing the underlying C-library on your system first. The dashboard includes a toggle to bypass TA-Lib if it is not installed.)*
+
+### 2. Run the Pipeline
+Execute the cells in `pattern_recognition_pipeline.ipynb` sequentially[cite: 9]. The pipeline will process the CSV data, automatically determine the optimal cluster count (K), evaluate the patterns, and prepare the environment for the dashboard.
+
+### 3. Launch the Dashboard
+Ensure `pr_dashboard.py` is in the same directory as your dataset and notebook. Launch the dashboard locally using your terminal:
+
+streamlit run pr_dashboard.py
+
+Open `http://localhost:8501` in your browser to interactively explore the pattern taxonomies, compare the SMA/EMA variants, and view the validation metrics.
